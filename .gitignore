@@ -62,3 +62,8 @@ dkms.conf
 
 # Build folder
 [Bb]uild
+
+raylib/
+build/
+*.wasm
+*.data
