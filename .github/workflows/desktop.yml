@@ -51,7 +51,4 @@ jobs:
         run: |
           pwd
           ls
-          cd ${{ env.PROJECT_NAME }}
-          pwd
-          ls
           make PLATFORM=${{ env.PLATFORM }} -B

@@ -55,15 +55,14 @@ jobs:
           update: true
           update-tags: false
 
-      - name: Build raylib Library
-        run: |
-          cd raylib/src
-          gcc --version
-          make PLATFORM=${{ env.PLATFORM }} BUILD_MODE=RELEASE RAYLIB_LIBTYPE=STATIC RAYLIB_PROJECT_RELEASE_PATH=. -B
+      # - name: Build raylib Library
+      #   run: |
+      #     cd raylib/src
+      #     gcc --version
+      #     make PLATFORM=${{ env.PLATFORM }} BUILD_MODE=RELEASE RAYLIB_LIBTYPE=STATIC RAYLIB_PROJECT_RELEASE_PATH=. -B
 
       - name: Build Project
         run: |
-          cd ${{ env.PROJECT_NAME }}
           make PLATFORM=${{ env.PLATFORM }} -B
 
       # - name: Generate Artifacts
