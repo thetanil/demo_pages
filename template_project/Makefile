@@ -23,17 +23,23 @@
 
 .PHONY: all clean
 
+mkfile_path := $(abspath $(lastword $(MAKEFILE_LIST)))
+current_dir := $(notdir $(patsubst %/,%,$(dir $(mkfile_path))))
+
+
 # Define required environment variables
 #------------------------------------------------------------------------------------------------
 # Define target platform: PLATFORM_DESKTOP, PLATFORM_WEB, PLATFORM_DRM
 PLATFORM              ?= PLATFORM_DESKTOP
 
-# Define project variables
-PROJECT_NAME          ?= raylib_game
-PROJECT_VERSION       ?= 1.0
-PROJECT_BUILD_PATH    ?= .
+MAKE := make
 
-RAYLIB_PATH           ?= ../../raylib
+# Define project variables
+PROJECT_NAME          ?= $(current_dir)
+PROJECT_VERSION       ?= 1.0
+PROJECT_BUILD_PATH    ?= ../build
+
+RAYLIB_PATH           ?= ../raylib
 RAYLIB_INCLUDE_PATH   ?= $(RAYLIB_PATH)/src
 RAYLIB_LIB_PATH       ?= $(RAYLIB_PATH)/src
 
@@ -49,87 +55,34 @@ BUILD_WEB_RESOURCES_PATH  ?= resources
 
 # Determine PLATFORM_OS in case PLATFORM_DESKTOP selected
 ifeq ($(PLATFORM),PLATFORM_DESKTOP)
-    # No uname.exe on MinGW!, but OS=Windows_NT on Windows!
-    # ifeq ($(UNAME),Msys) -> Windows
-    ifeq ($(OS),Windows_NT)
-        PLATFORM_OS = WINDOWS
-    else
-        UNAMEOS = $(shell uname)
-        ifeq ($(UNAMEOS),Linux)
-            PLATFORM_OS = LINUX
-        endif
-        ifeq ($(UNAMEOS),FreeBSD)
-            PLATFORM_OS = BSD
-        endif
-        ifeq ($(UNAMEOS),OpenBSD)
-            PLATFORM_OS = BSD
-        endif
-        ifeq ($(UNAMEOS),NetBSD)
-            PLATFORM_OS = BSD
-        endif
-        ifeq ($(UNAMEOS),DragonFly)
-            PLATFORM_OS = BSD
-        endif
-        ifeq ($(UNAMEOS),Darwin)
-            PLATFORM_OS = OSX
-        endif
-    endif
-endif
-ifeq ($(PLATFORM),PLATFORM_DRM)
-    UNAMEOS = $(shell uname)
-    ifeq ($(UNAMEOS),Linux)
-        PLATFORM_OS = LINUX
-    endif
+    PLATFORM_OS = LINUX
 endif
 
-ifeq ($(PLATFORM),PLATFORM_WEB)
-    # Emscripten required variables
-    EMSDK_PATH         ?= C:/emsdk
-    EMSCRIPTEN_PATH    ?= $(EMSDK_PATH)/upstream/emscripten
-    CLANG_PATH          = $(EMSDK_PATH)/upstream/bin
-    PYTHON_PATH         = $(EMSDK_PATH)/python/3.9.2-1_64bit
-    NODE_PATH           = $(EMSDK_PATH)/node/14.15.5_64bit/bin
-    export PATH         = $(EMSDK_PATH);$(EMSCRIPTEN_PATH);$(CLANG_PATH);$(NODE_PATH);$(PYTHON_PATH):$$(PATH)
-endif
+# ifeq ($(PLATFORM),PLATFORM_WEB)
+#     # Emscripten required variables
+#     EMSDK_PATH         ?= C:/emsdk
+#     EMSCRIPTEN_PATH    ?= $(EMSDK_PATH)/upstream/emscripten
+#     CLANG_PATH          = $(EMSDK_PATH)/upstream/bin
+#     PYTHON_PATH         = $(EMSDK_PATH)/python/3.9.2-1_64bit
+#     NODE_PATH           = $(EMSDK_PATH)/node/14.15.5_64bit/bin
+#     export PATH         = $(EMSDK_PATH);$(EMSCRIPTEN_PATH);$(CLANG_PATH);$(NODE_PATH);$(PYTHON_PATH):$$(PATH)
+# endif
 
 # Define default C compiler: CC
 #------------------------------------------------------------------------------------------------
 CC = gcc
 
-ifeq ($(PLATFORM),PLATFORM_DESKTOP)
-    ifeq ($(PLATFORM_OS),OSX)
-        # OSX default compiler
-        CC = clang
-    endif
-    ifeq ($(PLATFORM_OS),BSD)
-        # FreeBSD, OpenBSD, NetBSD, DragonFly default compiler
-        CC = clang
-    endif
-endif
 ifeq ($(PLATFORM),PLATFORM_WEB)
     # HTML5 emscripten compiler
     # WARNING: To compile to HTML5, code must be redesigned
     # to use emscripten.h and emscripten_set_main_loop()
     CC = emcc
 endif
-ifeq ($(PLATFORM),PLATFORM_DRM)
-    ifeq ($(USE_RPI_CROSS_COMPILER),TRUE)
-        # Define RPI cross-compiler
-        #CC = armv6j-hardfloat-linux-gnueabi-gcc
-        CC = $(RPI_TOOLCHAIN)/bin/arm-linux-gnueabihf-gcc
-    endif
-endif
 
 
 # Define default make program: MAKE
 #------------------------------------------------------------------------------------------------
-MAKE ?= make
 
-ifeq ($(PLATFORM),PLATFORM_DESKTOP)
-    ifeq ($(PLATFORM_OS),WINDOWS)
-        MAKE = mingw32-make
-    endif
-endif
 
 # Define compiler flags: CFLAGS
 #------------------------------------------------------------------------------------------------
@@ -153,51 +106,18 @@ else
         else
             CFLAGS += -Os
         endif
-    else
-        ifeq ($(PLATFORM_OS),OSX)
-            CFLAGS += -O2
-        else
-            CFLAGS += -s -O2
-        endif
     endif
-endif
-ifeq ($(PLATFORM),PLATFORM_DRM)
-    CFLAGS += -std=gnu99 -DEGL_NO_X11
 endif
 
 # Define include paths for required headers: INCLUDE_PATHS
 #------------------------------------------------------------------------------------------------
 INCLUDE_PATHS = -I. -I$(RAYLIB_PATH)/src -I$(RAYLIB_PATH)/src/external
 
-# Define additional directories containing required header files
-ifeq ($(PLATFORM),PLATFORM_DRM)
-    # DRM required libraries
-    INCLUDE_PATHS += -I/usr/include/libdrm
-endif
-ifeq ($(PLATFORM),PLATFORM_DESKTOP)
-    ifeq ($(PLATFORM_OS),BSD)
-        # Consider -L$(RAYLIB_H_INSTALL_PATH)
-        INCLUDE_PATHS += -I/usr/local/include
-    endif
-endif
-
 # Define library paths containing required libs: LDFLAGS
 #------------------------------------------------------------------------------------------------
 LDFLAGS = -L. -L$(RAYLIB_LIB_PATH)
 
 ifeq ($(PLATFORM),PLATFORM_DESKTOP)
-    ifeq ($(PLATFORM_OS),WINDOWS)
-        # resource file contains windows executable icon and properties
-        LDFLAGS += $(RAYLIB_PATH)/src/raylib.rc.data
-        # -Wl,--subsystem,windows hides the console window
-        ifeq ($(BUILD_MODE), RELEASE)
-            LDFLAGS += -Wl,--subsystem,windows
-        endif
-    endif
-    ifeq ($(PLATFORM_OS),BSD)
-        # Consider -L$(RAYLIB_INSTALL_PATH)
-        LDFLAGS += -Lsrc -L/usr/local/lib
-    endif
     ifeq ($(PLATFORM_OS),LINUX)
         # Reset everything.
         # Precedence: immediately local, installed version, raysan5 provided libs
@@ -220,17 +140,17 @@ ifeq ($(PLATFORM),PLATFORM_WEB)
     # --preload-file resources   # specify a resources folder for data compilation
     # --source-map-base          # allow debugging in browser with source map
     LDFLAGS += -s USE_GLFW=3 -s TOTAL_MEMORY=$(BUILD_WEB_HEAP_SIZE) -s FORCE_FILESYSTEM=1
-    
+
     # Build using asyncify
     ifeq ($(BUILD_WEB_ASYNCIFY),TRUE)
         LDFLAGS += -s ASYNCIFY
     endif
-    
+
     # Add resources building if required
     ifeq ($(BUILD_WEB_RESOURCES),TRUE)
         LDFLAGS += --preload-file $(BUILD_WEB_RESOURCES_PATH)
     endif
-    
+
     # Add debug mode flags if required
     ifeq ($(BUILD_MODE),DEBUG)
         LDFLAGS += -s ASSERTIONS=1 --profiling
@@ -245,13 +165,6 @@ endif
 # NOTE: To link libraries (lib<name>.so or lib<name>.a), use -l<name>
 #------------------------------------------------------------------------------------------------
 ifeq ($(PLATFORM),PLATFORM_DESKTOP)
-    ifeq ($(PLATFORM_OS),WINDOWS)
-        # Libraries for Windows desktop compilation
-        # NOTE: WinMM library required to set high-res timer resolution
-        LDLIBS = -lraylib -lopengl32 -lgdi32 -lwinmm -lcomdlg32 -lole32
-        # Required for physac examples
-        LDLIBS += -static -lpthread
-    endif
     ifeq ($(PLATFORM_OS),LINUX)
         # Libraries for Debian GNU/Linux desktop compiling
         # NOTE: Required packages: libegl1-mesa-dev
@@ -271,74 +184,43 @@ ifeq ($(PLATFORM),PLATFORM_DESKTOP)
             LDLIBS += -lc
         endif
     endif
-    ifeq ($(PLATFORM_OS),OSX)
-        # Libraries for OSX 10.9 desktop compiling
-        # NOTE: Required packages: libopenal-dev libegl1-mesa-dev
-        LDLIBS = -lraylib -framework OpenGL -framework Cocoa -framework IOKit -framework CoreAudio -framework CoreVideo
-    endif
-    ifeq ($(PLATFORM_OS),BSD)
-        # Libraries for FreeBSD, OpenBSD, NetBSD, DragonFly desktop compiling
-        # NOTE: Required packages: mesa-libs
-        LDLIBS = -lraylib -lGL -lpthread -lm
-
-        # On XWindow requires also below libraries
-        LDLIBS += -lX11 -lXrandr -lXinerama -lXi -lXxf86vm -lXcursor
-    endif
 endif
 ifeq ($(PLATFORM),PLATFORM_WEB)
     # Libraries for web (HTML5) compiling
     LDLIBS = $(RAYLIB_LIB_PATH)/libraylib.a
 endif
-ifeq ($(PLATFORM),PLATFORM_DRM)
-    # Libraries for DRM compiling
-    # NOTE: Required packages: libasound2-dev (ALSA)
-    LDLIBS = -lraylib -lGLESv2 -lEGL -lpthread -lrt -lm -lgbm -ldrm -ldl
-endif
 
 
 # Define source code files required
 #------------------------------------------------------------------------------------------------
-PROJECT_SOURCE_FILES ?= raylib_game.c
+PROJECT_SOURCE_FILES ?= main.c
 
 # Define all object files from source files
 OBJS = $(patsubst %.c, %.o, $(PROJECT_SOURCE_FILES))
+EXT ?= .out
 
 # Define processes to execute
 #------------------------------------------------------------------------------------------------
 # Default target entry
 # NOTE: We call this Makefile target or Makefile.Android target
 all:
+	@echo -- -- making $(PROJECT_NAME)
 	$(MAKE) $(PROJECT_NAME)
 
 # Project target defined by PROJECT_NAME
 $(PROJECT_NAME): $(OBJS)
-	$(CC) -o $(PROJECT_BUILD_PATH)/$(PROJECT_NAME)$(EXT) $(OBJS) $(CFLAGS) $(INCLUDE_PATHS) $(LDFLAGS) $(LDLIBS) -D$(PLATFORM)
+	@echo -- -- compiling $(PROJECT_NAME)
+	$(CC) -o $(PROJECT_BUILD_PATH)/$(PROJECT_NAME)/main$(EXT) $(OBJS) $(CFLAGS) $(INCLUDE_PATHS) $(LDFLAGS) $(LDLIBS) -D$(PLATFORM)
 
 # Compile source files
 # NOTE: This pattern will compile every module defined on $(OBJS)
 %.o: %.c
+	@echo -- -- compiling $<
 	$(CC) -c $< -o $@ $(CFLAGS) $(INCLUDE_PATHS) -D$(PLATFORM)
 
 # Clean everything
 clean:
-ifeq ($(PLATFORM),PLATFORM_DESKTOP)
-    ifeq ($(PLATFORM_OS),WINDOWS)
-		del *.o *.exe /s
-    endif
-    ifeq ($(PLATFORM_OS),LINUX)
-		find . -type f -executable -delete
-		rm -fv *.o
-    endif
-    ifeq ($(PLATFORM_OS),OSX)
-		rm -f *.o external/*.o $(PROJECT_NAME)
-    endif
-endif
-ifeq ($(PLATFORM),PLATFORM_DRM)
 	find . -type f -executable -delete
-	rm -fv *.o
-endif
-ifeq ($(PLATFORM),PLATFORM_WEB)
-	del *.o *.html *.js
-endif
+	rm -fv *.o *.js *.wasm *.data
 	@echo Cleaning done
 

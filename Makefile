@@ -1,26 +1,35 @@
-SUBDIRS := $(filter-out raylib/,$(wildcard */))
-BUILDDIRS := $(addprefix build/,$(SUBDIRS))
+SUBDIRS := $(filter-out raylib/ build/ screenshots/,$(wildcard */))
 
-.PHONY: all
+# PLATFORM              ?= PLATFORM_WEB
+PLATFORM              ?= PLATFORM_DESKTOP
 
-all: build $(BUILDDIRS) raylib
+.PHONY: all clean raylib
+
+all: raylib
+	@echo "-- building $(SUBDIRS)"
 	@for dir in $(SUBDIRS); do \
 		if [ -f $$dir/Makefile ]; then \
-		echo "*****"; \
-		echo "*****  Making in $$dir"; \
-		echo "*****"; \
-		$(MAKE) -C $$dir; \
+			mkdir -p build/$$dir; \
+			echo "-- Making in $$dir"; \
+			$(MAKE) -C $(basename $$dir); \
 		fi \
 	done
 
-build:
-	mkdir -p build
-
-build/%:
-	mkdir -p $@
+clean:
+	rm -rf build
+	$(MAKE) -C raylib/src clean
+	@for dir in $(SUBDIRS); do \
+		if [ -f $$dir/Makefile ]; then \
+			$(MAKE) -C $(basename $$dir) clean; \
+		fi \
+	done
 
 raylib:
+	@echo "-- building raylib (if necessary)"
 	if [ ! -d "raylib" ]; then \
 		git clone https://github.com/raysan5/raylib.git; \
 	fi
+	if [ ! -f "raylib/src/libraylib.a" ]; then \
+		$(MAKE) -C raylib/src; \
+    fi
 
