@@ -1,4 +1,4 @@
-name: destop
+name: desktop
 
 on:
   push:
