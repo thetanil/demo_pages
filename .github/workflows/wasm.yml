@@ -1,4 +1,4 @@
-name: Linux
+name: wasm
 
 on:
   workflow_dispatch:
