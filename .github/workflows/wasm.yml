@@ -19,6 +19,7 @@ jobs:
       PROJECT_RELEASE_PATH: ${{ github.event.repository.name }}_dev_linux_x64
       PROJECT_SOURCES: "raylib_game.c"
       PROJECT_CUSTOM_FLAGS: ""
+      PLATFORM: PLATFORM_WEB
 
     steps:
       - name: Checkout this repo
@@ -50,12 +51,12 @@ jobs:
         run: |
           cd raylib/src
           gcc --version
-          make PLATFORM=PLATFORM_DESKTOP BUILD_MODE=RELEASE RAYLIB_LIBTYPE=STATIC RAYLIB_PROJECT_RELEASE_PATH=. -B
+          make PLATFORM=${{ env.PLATFORM }} BUILD_MODE=RELEASE RAYLIB_LIBTYPE=STATIC RAYLIB_PROJECT_RELEASE_PATH=. -B
 
       - name: Build Product
         run: |
           cd ${{ env.PROJECT_NAME }}/src
-          make PLATFORM=PLATFORM_DESKTOP BUILD_MODE=RELEASE PROJECT_SOURCE_FILES=${{ env.PROJECT_SOURCES }} PROJECT_CUSTOM_FLAGS=${{ env.PROJECT_CUSTOM_FLAGS }} PROJECT_BUILD_PATH=. RAYLIB_PATH=../../raylib
+          make PLATFORM=${{ env.PLATFORM }} BUILD_MODE=RELEASE PROJECT_SOURCE_FILES=${{ env.PROJECT_SOURCES }} PROJECT_CUSTOM_FLAGS=${{ env.PROJECT_CUSTOM_FLAGS }} PROJECT_BUILD_PATH=. RAYLIB_PATH=../../raylib
 
       - name: Generate Artifacts
         run: |
