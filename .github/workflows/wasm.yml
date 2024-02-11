@@ -43,10 +43,18 @@ jobs:
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y --no-install-recommends libglfw3 libglfw3-dev libx11-dev libxcursor-dev libxrandr-dev libxinerama-dev libxi-dev libxext-dev libxfixes-dev
-          sudo apt-get install -y emscripten
           mkdir ${{ env.PROJECT_RELEASE_PATH }}
           ls
         shell: bash
+
+      - name: Setup Emscripten toolchain
+        # You may pin to the exact commit or the version.
+        # uses: mymindstorm/setup-emsdk@6ab9eb1bda2574c4ddb79809fc9247783eaf9021
+        uses: mymindstorm/setup-emsdk@v14
+        with:
+          no-cache: true
+          update: true
+          update-tags: false
 
       - name: Build raylib Library
         run: |
