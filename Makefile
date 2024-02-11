@@ -27,7 +27,7 @@ clean:
 raylib:
 	@echo "-- building raylib (if necessary)"
 	if [ ! -d "raylib" ]; then \
-		git clone https://github.com/raysan5/raylib.git; \
+		git clone --depth 1 https://github.com/raysan5/raylib.git; \
 	fi
 	if [ ! -f "raylib/src/libraylib.a" ]; then \
 		$(MAKE) -C raylib/src; \
