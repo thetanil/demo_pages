@@ -9,6 +9,13 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
+    env:
+      PROJECT_NAME: ${{ github.event.repository.name }} # demo_pages
+      PROJECT_BUILD_PATH: ${{ github.event.repository.name }}/build
+      PROJECT_RELEASE_PATH: ${{ github.event.repository.name }}_dev_linux_x64
+      PROJECT_CUSTOM_FLAGS: ""
+
     steps:
       - uses: actions/checkout@v4
 
