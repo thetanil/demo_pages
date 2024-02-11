@@ -51,4 +51,4 @@ jobs:
         run: |
           pwd
           ls
-          make PLATFORM=${{ env.PLATFORM }} -B
+          make PLATFORM=${{ env.PLATFORM }} all

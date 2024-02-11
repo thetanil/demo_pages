@@ -63,7 +63,7 @@ jobs:
 
       - name: Build Project
         run: |
-          make PLATFORM=${{ env.PLATFORM }} -B
+          make PLATFORM=${{ env.PLATFORM }} all
 
       # - name: Generate Artifacts
       #   run: |
