@@ -19,52 +19,37 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Checkout raylib repo
-        uses: actions/checkout@v4
-        with:
-          repository: raysan5/raylib
-          path: raylib
+      # makefile does this
+      # - name: Checkout raylib repo
+      #   uses: actions/checkout@v4
+      #   with:
+      #     repository: raysan5/raylib
+      #     path: raylib
 
-      - name: Setup Release Paths
-        run: |
-          echo "PROJECT_RELEASE_PATH=${{ env.PROJECT_NAME }}_v${{ github.event.release.tag_name }}_linux_x64" >> $GITHUB_ENV
-        shell: bash
-        if: github.event_name == 'release' && github.event.action == 'published'
+      # - name: Setup Release Paths
+      #   run: |
+      #     echo "PROJECT_RELEASE_PATH=${{ env.PROJECT_NAME }}_v${{ github.event.release.tag_name }}_linux_x64" >> $GITHUB_ENV
+      #   shell: bash
+      #   if: github.event_name == 'release' && github.event.action == 'published'
 
       - name: Setup Environment
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y --no-install-recommends libglfw3 libglfw3-dev libx11-dev libxcursor-dev libxrandr-dev libxinerama-dev libxi-dev libxext-dev libxfixes-dev
-          mkdir ${{ env.PROJECT_RELEASE_PATH }}
+          # mkdir ${{ env.PROJECT_RELEASE_PATH }}
           ls
         shell: bash
 
-      # - name: configure
-      #   run: ./configure
-      # - name: make check
-      #   run: make check
-      # - name: make distcheck
-      #   run: make distcheck
-      - name: Setup Emscripten toolchain
-        # You may pin to the exact commit or the version.
-        # uses: mymindstorm/setup-emsdk@6ab9eb1bda2574c4ddb79809fc9247783eaf9021
-        uses: mymindstorm/setup-emsdk@v14
-        with:
-          # Version to install
-          # version:# optional, default is latest
-          # If true will not download any version of Emscripten. emsdk will still be added to PATH.
-          # no-install:# optional
-          # If true will not cache any downloads with tc.cacheDir.
-          no-cache:
-            true # optional
-            # Directory to cache emsdk in. This folder will go under $GITHUB_HOME (I.e. build dir) and be cached using @actions/cache.
-          # actions-cache-folder:# optional, default is
-          # Override the cache key. By default, it is `{Github workflow name}-{Emscripten version}-{OS type}-${CPU architecture}`.
-          # cache-key:# optional, default is
-          # Fetch package information for all the new tools and SDK versions
-          update:
-            true # optional
-            # Deprecated in favor of `update`.
-          update-tags: false # optional
+      # makefile does this
+      # - name: Build raylib Library
+      #   run: |
+      #     cd raylib/src
+      #     gcc --version
+      #     make PLATFORM=${{ env.PLATFORM }} BUILD_MODE=RELEASE RAYLIB_LIBTYPE=STATIC RAYLIB_PROJECT_RELEASE_PATH=. -B
+
       - name: make
-        run: make
+        run: |
+          cd ${{ env.PROJECT_NAME }}
+          pwd
+          ls
+          make PLATFORM=${{ env.PLATFORM }} -B
