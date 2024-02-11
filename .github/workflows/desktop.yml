@@ -49,6 +49,8 @@ jobs:
 
       - name: make
         run: |
+          pwd
+          ls
           cd ${{ env.PROJECT_NAME }}
           pwd
           ls
