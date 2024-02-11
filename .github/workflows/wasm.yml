@@ -4,8 +4,8 @@ on:
   workflow_dispatch:
   push:
     paths:
-      - "src/**"
-      - ".github/workflows/linux.yml"
+      - "**"
+      - ".github/workflows/wasm.yml"
   release:
     types: [published]
 
