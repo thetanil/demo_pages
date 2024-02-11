@@ -27,7 +27,7 @@ jobs:
           path: ${{ env.PROJECT_NAME }}
 
       - name: Checkout raylib repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: raysan5/raylib
           path: raylib
