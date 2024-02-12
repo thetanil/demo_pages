@@ -49,6 +49,6 @@ jobs:
 
       - name: make
         run: |
-          pwd
-          ls
+          echo "pwd $(pwd)"
+          echo "ls $(ls)"
           make PLATFORM=${{ env.PLATFORM }} all
