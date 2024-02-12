@@ -55,6 +55,18 @@ jobs:
           update: true
           update-tags: false
 
+      - name: Install Emscripten
+        run: |
+          git clone https://github.com/emscripten-core/emsdk.git
+          cd emsdk
+          echo "pwd $(pwd)"
+          echo "ls $(ls)"
+          ./emsdk install latest
+          ./emsdk activate latest
+          source emsdk/emsdk_env.sh
+          emcc --version
+        shell: bash
+
       # - name: Build raylib Library
       #   run: |
       #     cd raylib/src
@@ -63,6 +75,8 @@ jobs:
 
       - name: Build Project
         run: |
+          echo "pwd $(pwd)"
+          echo "ls $(ls)"
           make PLATFORM=${{ env.PLATFORM }} all
 
       # - name: Generate Artifacts
