@@ -109,6 +109,13 @@ jobs:
       #     asset_path: ./${{ env.PROJECT_RELEASE_PATH }}.zip
       #     asset_content_type: application/zip
       #   if: github.event_name == 'release' && github.event.action == 'published'
+      #
+    - name: Setup Pages
+      uses: actions/configure-pages@v2
+    - name: Upload artifact
+      uses: actions/upload-pages-artifact@v1
+      with:
+        path: './dist'
   deploy:
     # Add a dependency to the build job
     needs: build
