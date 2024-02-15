@@ -52,4 +52,4 @@ jobs:
         run: |
           echo "pwd $(pwd)"
           echo "ls $(ls)"
-          make PLATFORM=${{ env.PLATFORM }} all
+          make PLATFORM=${{ env.PLATFORM }}

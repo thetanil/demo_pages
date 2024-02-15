@@ -210,6 +210,8 @@ all:
 # Project target defined by PROJECT_NAME
 $(PROJECT_NAME): $(OBJS)
 	@echo -- -- compiling $(PROJECT_NAME)
+	ls -la $(PROJECT_BUILD_PATH)
+	ls -la $(PROJECT_BUILD_PATH)/$(PROJECT_NAME)
 	$(CC) -o $(PROJECT_BUILD_PATH)/$(PROJECT_NAME)/main$(EXT) $(OBJS) $(CFLAGS) $(INCLUDE_PATHS) $(LDFLAGS) $(LDLIBS) -D$(PLATFORM)
 
 # Compile source files
