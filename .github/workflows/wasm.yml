@@ -125,9 +125,9 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v2
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v1
-        with:
-          path: "."
+        uses: actions/upload-pages-artifact@v4
+        # with:
+        #   path: "."
 
   deploy:
     runs-on: ubuntu-latest
