@@ -75,7 +75,7 @@ jobs:
           source ${{ env.PROJECT_BUILD_PATH }}/emsdk/emsdk_env.sh
           cd ${{ github.workspace }}
           make PLATFORM=${{ env.PLATFORM }}
-          rm -rf emsdk
+          rm -rf ${{ env.PROJECT_BUILD_PATH }}/emsdk
 
       - uses: actions/upload-artifact@v4
         with:
