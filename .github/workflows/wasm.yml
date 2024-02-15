@@ -32,6 +32,9 @@ jobs:
           repository: raysan5/raylib
           path: raylib
 
+      - name: create build path
+        run: mkdir -p ${{ env.PROJECT_BUILD_PATH }}
+
       # - name: Setup Release Paths
       #   run: |
       #     echo "PROJECT_RELEASE_PATH=${{ env.PROJECT_NAME }}_v${{ github.event.release.tag_name }}_linux_x64" >> $GITHUB_ENV
