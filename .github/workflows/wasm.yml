@@ -72,9 +72,8 @@ jobs:
       #
       - name: Build Project
         run: |
+          source ${{ env.PROJECT_BUILD_PATH }}/emsdk/emsdk_env.sh
           cd ${{ github.workspace }}
-          echo "pwd $(pwd)"
-          echo "ls $(ls)"
           make PLATFORM=${{ env.PLATFORM }}
 
       # - name: Generate Artifacts
