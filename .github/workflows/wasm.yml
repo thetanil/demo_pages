@@ -7,17 +7,6 @@ on:
       - ".github/workflows/wasm.yml"
 
   workflow_dispatch:
-  # release:
-  #   types: [published]
-
-# permissions:
-#   contents: read
-#   pages: write
-#   id-token: write
-
-# concurrency:
-#   group: pages
-#   cancel-in-progress: true
 
 jobs:
   build:
@@ -45,6 +34,19 @@ jobs:
         #   shell: bash
         #   if: github.event_name == 'release' && github.event.action == 'published'
 
+      - name: debug
+        run: |
+          echo "pwd $(pwd)"
+          echo "ls $(ls)"
+          echo "env $(env)"
+          echo "github $(github)"
+          echo "github.workspace $(github.workspace)"
+          echo "github.event $(github.event)"
+          echo "github.event.repository $(github.event.repository)"
+          echo "github.event.repository.name $(github.event.repository.name)"
+          echo "github.event.release $(github.event.release)"
+          echo "github.event.release.tag_name $(github.event.release.tag_name
+
       - name: Setup Environment
         run: |
           sudo apt-get update -qq
@@ -64,7 +66,6 @@ jobs:
       - name: Install Emscripten
         run: |
           mkdir -p ${{ env.PROJECT_BUILD_PATH }}
-          cd ${{ env.PROJECT_BUILD_PATH }}
           git clone https://github.com/emscripten-core/emsdk.git ${{ env.PROJECT_BUILD_PATH }}/emsdk
           cd ${{ env.PROJECT_BUILD_PATH }}/emsdk
           ./emsdk install latest
@@ -80,6 +81,19 @@ jobs:
           #     gcc --version
           #     make PLATFORM=${{ env.PLATFORM }} BUILD_MODE=RELEASE RAYLIB_LIBTYPE=STATIC RAYLIB_PROJECT_RELEASE_PATH=. -B
           #
+      - name: debug
+        run: |
+          echo "pwd $(pwd)"
+          echo "ls $(ls)"
+          echo "env $(env)"
+          echo "github $(github)"
+          echo "github.workspace $(github.workspace)"
+          echo "github.event $(github.event)"
+          echo "github.event.repository $(github.event.repository)"
+          echo "github.event.repository.name $(github.event.repository.name)"
+          echo "github.event.release $(github.event.release)"
+          echo "github.event.release.tag_name $(github.event.release.tag_name
+
       - name: Build Project
         run: |
           source ${{ env.PROJECT_BUILD_PATH }}/emsdk/emsdk_env.sh
@@ -87,6 +101,10 @@ jobs:
           make PLATFORM=${{ env.PLATFORM }}
           rm -rf ${{ env.PROJECT_BUILD_PATH }}/emsdk
           cp index.html ${{ env.PROJECT_BUILD_PATH }}/index.html
+
+      - name: Tree
+        run: |
+          tree ${{ env.PROJECT_BUILD_PATH }}
 
       # - uses: actions/upload-artifact@v4
       #   with:
@@ -126,10 +144,6 @@ jobs:
           chmod -c -R +rX ${{ env.PROJECT_BUILD_PATH }} | while read line; do
             echo "::warning title=Invalid file permissions automatically fixed::$line"
           done
-
-      - name: Tree
-        run: |
-          tree ${{ env.PROJECT_BUILD_PATH }}
 
       - name: Setup Pages
         uses: actions/configure-pages@v3
