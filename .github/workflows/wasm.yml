@@ -1,11 +1,12 @@
 name: wasm
 
 on:
+  push:
+    paths:
+      - "**"
+      - ".github/workflows/wasm.yml"
+
   workflow_dispatch:
-    push:
-      paths:
-        - "**"
-        - ".github/workflows/wasm.yml"
   # release:
   #   types: [published]
 
