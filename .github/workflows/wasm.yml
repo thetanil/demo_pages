@@ -40,9 +40,9 @@ jobs:
       - name: Build Project
         run: |
           echo "PROJECT_BUILD_PATH: ${{ env.PROJECT_BUILD_PATH }}"
-          echo "GITHUB_WORKSPACE: ${{ env.GITHUB_WORKSPACE }}"
+          echo "GITHUB_WORKSPACE: ${{ github.workspace }}"
           source ${{ env.PROJECT_BUILD_PATH }}/emsdk/emsdk_env.sh
-          cd ${{ github.workspace }}/demo_pages
+          cd ${{ github.workspace }}
           make PLATFORM=${{ env.PLATFORM }}
           rm -rf ${{ env.PROJECT_BUILD_PATH }}/emsdk
           cp index.html ${{ env.PROJECT_BUILD_PATH }}/index.html
