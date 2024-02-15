@@ -32,11 +32,11 @@ jobs:
           repository: raysan5/raylib
           path: raylib
 
-      - name: Setup Release Paths
-        run: |
-          echo "PROJECT_RELEASE_PATH=${{ env.PROJECT_NAME }}_v${{ github.event.release.tag_name }}_linux_x64" >> $GITHUB_ENV
-        shell: bash
-        if: github.event_name == 'release' && github.event.action == 'published'
+      # - name: Setup Release Paths
+      #   run: |
+      #     echo "PROJECT_RELEASE_PATH=${{ env.PROJECT_NAME }}_v${{ github.event.release.tag_name }}_linux_x64" >> $GITHUB_ENV
+      #   shell: bash
+      #   if: github.event_name == 'release' && github.event.action == 'published'
 
       - name: Setup Environment
         run: |
@@ -46,24 +46,25 @@ jobs:
           ls
         shell: bash
 
-      - name: Setup Emscripten toolchain
-        # You may pin to the exact commit or the version.
-        # uses: mymindstorm/setup-emsdk@6ab9eb1bda2574c4ddb79809fc9247783eaf9021
-        uses: mymindstorm/setup-emsdk@v14
-        with:
-          no-cache: true
-          update: true
-          update-tags: false
+      # - name: Setup Emscripten toolchain
+      #   # You may pin to the exact commit or the version.
+      #   # uses: mymindstorm/setup-emsdk@6ab9eb1bda2574c4ddb79809fc9247783eaf9021
+      #   uses: mymindstorm/setup-emsdk@v14
+      #   with:
+      #     no-cache: true
+      #     update: true
+      #     update-tags: false
 
       - name: Install Emscripten
         run: |
+          cd ${{ PROJECT_BUILD_PATH }}
           git clone https://github.com/emscripten-core/emsdk.git
-          cd emsdk
+          cd ${{ PROJECT_BUILD_PATH }}/emsdk
           echo "pwd $(pwd)"
           echo "ls $(ls)"
           ./emsdk install latest
           ./emsdk activate latest
-          source emsdk/emsdk_env.sh
+          source ${{ PROJECT_BUILD_PATH }}/emsdk/emsdk_env.sh
           emcc --version
         shell: bash
 
