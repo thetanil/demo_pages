@@ -6,8 +6,8 @@ on:
       paths:
         - "**"
         - ".github/workflows/wasm.yml"
-  release:
-    types: [published]
+  # release:
+  #   types: [published]
 
 permissions:
   contents: read
