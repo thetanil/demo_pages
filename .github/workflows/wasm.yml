@@ -83,7 +83,7 @@ jobs:
       - name: Build Project
         run: |
           source ${{ env.PROJECT_BUILD_PATH }}/emsdk/emsdk_env.sh
-          cd ${{ github.workspace }}
+          cd ${{ github.workspace }}/demo_pages
           make PLATFORM=${{ env.PLATFORM }}
           rm -rf ${{ env.PROJECT_BUILD_PATH }}/emsdk
           cp index.html ${{ env.PROJECT_BUILD_PATH }}/index.html
