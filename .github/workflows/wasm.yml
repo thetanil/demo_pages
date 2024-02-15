@@ -25,9 +25,9 @@ jobs:
 
     env:
       PROJECT_NAME: ${{ github.event.repository.name }}
-      PROJECT_BUILD_PATH: ${{ github.workspace }}/build
-      PROJECT_RELEASE_PATH: ${{ github.event.repository.name }}_dev_linux_x64
-      PROJECT_CUSTOM_FLAGS: ""
+      PROJECT_BUILD_PATH: ${{ github.workspace }}/${{ github.event.repository.name }}/build
+      # PROJECT_RELEASE_PATH: ${{ github.event.repository.name }}_dev_linux_x64
+      # PROJECT_CUSTOM_FLAGS: ""
       PLATFORM: PLATFORM_WEB
 
     steps:
@@ -49,8 +49,6 @@ jobs:
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y --no-install-recommends libglfw3 libglfw3-dev libx11-dev libxcursor-dev libxrandr-dev libxinerama-dev libxi-dev libxext-dev libxfixes-dev
-          # mkdir ${{ env.PROJECT_RELEASE_PATH }}
-          # ls
         shell:
           bash
 
@@ -128,6 +126,10 @@ jobs:
           chmod -c -R +rX ${{ env.PROJECT_BUILD_PATH }} | while read line; do
             echo "::warning title=Invalid file permissions automatically fixed::$line"
           done
+
+      - name: Tree
+        run: |
+          tree ${{ env.PROJECT_BUILD_PATH }}
 
       - name: Setup Pages
         uses: actions/configure-pages@v3
