@@ -14,7 +14,7 @@ jobs:
 
     env:
       PROJECT_NAME: ${{ github.event.repository.name }}
-      PROJECT_BUILD_PATH: ${{ github.workspace }}}/build
+      PROJECT_BUILD_PATH: ${{ github.workspace }}/build
       PLATFORM: PLATFORM_WEB
 
     steps:
