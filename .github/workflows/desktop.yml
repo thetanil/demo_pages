@@ -4,7 +4,7 @@ on:
   push:
     branches: ["main"]
     paths-ignore:
-     - '**/workflows/wasm.yml'
+      - "**/workflows/wasm.yml"
   pull_request:
     branches: ["main"]
 
@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      PROJECT_NAME: ${{ github.event.repository.name }} # demo_pages
+      # PROJECT_NAME: ${{ github.event.repository.name }} # demo_pages
       PROJECT_BUILD_PATH: ${{ github.event.repository.name }}/build
       PROJECT_RELEASE_PATH: ${{ github.event.repository.name }}_dev_linux_x64
       PROJECT_CUSTOM_FLAGS: ""
@@ -55,4 +55,3 @@ jobs:
           echo "pwd $(pwd)"
           echo "ls $(ls)"
           make PLATFORM=${{ env.PLATFORM }}
-

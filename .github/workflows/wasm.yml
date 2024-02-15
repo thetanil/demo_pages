@@ -13,7 +13,6 @@ jobs:
     runs-on: ubuntu-20.04
 
     env:
-      # PROJECT_NAME: ${{ github.event.repository.name }}
       PROJECT_BUILD_PATH: ${{ github.workspace }}/build
       PLATFORM: PLATFORM_WEB
 
