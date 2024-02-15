@@ -61,8 +61,6 @@ jobs:
           cd ${{ env.PROJECT_BUILD_PATH }}
           git clone https://github.com/emscripten-core/emsdk.git ${{ env.PROJECT_BUILD_PATH }}/emsdk
           cd ${{ env.PROJECT_BUILD_PATH }}/emsdk
-          echo "pwd $(pwd)"
-          echo "ls $(ls)"
           ./emsdk install latest
           ./emsdk activate latest
           source ${{ env.PROJECT_BUILD_PATH }}/emsdk/emsdk_env.sh
@@ -74,9 +72,10 @@ jobs:
       #     cd raylib/src
       #     gcc --version
       #     make PLATFORM=${{ env.PLATFORM }} BUILD_MODE=RELEASE RAYLIB_LIBTYPE=STATIC RAYLIB_PROJECT_RELEASE_PATH=. -B
-
+      #
       - name: Build Project
         run: |
+          cd ${{ github.workspace }}
           echo "pwd $(pwd)"
           echo "ls $(ls)"
           make PLATFORM=${{ env.PLATFORM }}
