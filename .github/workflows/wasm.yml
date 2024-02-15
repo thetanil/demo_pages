@@ -57,14 +57,14 @@ jobs:
 
       - name: Install Emscripten
         run: |
-          cd ${{ PROJECT_BUILD_PATH }}
+          cd ${{ env.PROJECT_BUILD_PATH }}
           git clone https://github.com/emscripten-core/emsdk.git
-          cd ${{ PROJECT_BUILD_PATH }}/emsdk
+          cd ${{ env.PROJECT_BUILD_PATH }}/emsdk
           echo "pwd $(pwd)"
           echo "ls $(ls)"
           ./emsdk install latest
           ./emsdk activate latest
-          source ${{ PROJECT_BUILD_PATH }}/emsdk/emsdk_env.sh
+          source ${{ env.PROJECT_BUILD_PATH }}/emsdk/emsdk_env.sh
           emcc --version
         shell: bash
 
