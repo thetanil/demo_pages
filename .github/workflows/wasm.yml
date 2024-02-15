@@ -2,9 +2,9 @@ name: wasm
 
 on:
   workflow_dispatch:
-  push:
-    paths:
-      - "**"
+    push:
+      paths:
+        - "**"
       - ".github/workflows/wasm.yml"
   release:
     types: [published]
@@ -23,17 +23,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # - name: Checkout raylib repo
-      #   uses: actions/checkout@v4
-      #   with:
-      #     repository: raysan5/raylib
-      #     path: raylib
+        # - name: Checkout raylib repo
+        #   uses: actions/checkout@v4
+        #   with:
+        #     repository: raysan5/raylib
+        #     path: raylib
 
-      # - name: Setup Release Paths
-      #   run: |
-      #     echo "PROJECT_RELEASE_PATH=${{ env.PROJECT_NAME }}_v${{ github.event.release.tag_name }}_linux_x64" >> $GITHUB_ENV
-      #   shell: bash
-      #   if: github.event_name == 'release' && github.event.action == 'published'
+        # - name: Setup Release Paths
+        #   run: |
+        #     echo "PROJECT_RELEASE_PATH=${{ env.PROJECT_NAME }}_v${{ github.event.release.tag_name }}_linux_x64" >> $GITHUB_ENV
+        #   shell: bash
+        #   if: github.event_name == 'release' && github.event.action == 'published'
 
       - name: Setup Environment
         run: |
@@ -43,14 +43,14 @@ jobs:
           # ls
         shell: bash
 
-      # - name: Setup Emscripten toolchain
-      #   # You may pin to the exact commit or the version.
-      #   # uses: mymindstorm/setup-emsdk@6ab9eb1bda2574c4ddb79809fc9247783eaf9021
-      #   uses: mymindstorm/setup-emsdk@v14
-      #   with:
-      #     no-cache: true
-      #     update: true
-      #     update-tags: false
+          # - name: Setup Emscripten toolchain
+          #   # You may pin to the exact commit or the version.
+          #   # uses: mymindstorm/setup-emsdk@6ab9eb1bda2574c4ddb79809fc9247783eaf9021
+          #   uses: mymindstorm/setup-emsdk@v14
+          #   with:
+          #     no-cache: true
+          #     update: true
+          #     update-tags: false
 
       - name: Install Emscripten
         run: |
@@ -64,12 +64,12 @@ jobs:
           emcc --version
         shell: bash
 
-      # - name: Build raylib Library
-      #   run: |
-      #     cd raylib/src
-      #     gcc --version
-      #     make PLATFORM=${{ env.PLATFORM }} BUILD_MODE=RELEASE RAYLIB_LIBTYPE=STATIC RAYLIB_PROJECT_RELEASE_PATH=. -B
-      #
+          # - name: Build raylib Library
+          #   run: |
+          #     cd raylib/src
+          #     gcc --version
+          #     make PLATFORM=${{ env.PLATFORM }} BUILD_MODE=RELEASE RAYLIB_LIBTYPE=STATIC RAYLIB_PROJECT_RELEASE_PATH=. -B
+          #
       - name: Build Project
         run: |
           source ${{ env.PROJECT_BUILD_PATH }}/emsdk/emsdk_env.sh
@@ -82,59 +82,59 @@ jobs:
           path:
             ${{ env.PROJECT_BUILD_PATH }}
 
-      # - name: Generate Artifacts
-      #   run: |
-      #     ls ${{ env.PROJECT_BUILD_PATH }}
-      #     cp ${{ env.PROJECT_BUILD_PATH }}/${{ env.PROJECT_NAME }} ${{ env.PROJECT_RELEASE_PATH }}
-      #     cp ${{ env.PROJECT_NAME }}/README.md ${{ env.PROJECT_RELEASE_PATH }}
-      #     cp ${{ env.PROJECT_NAME }}/LICENSE ${{ env.PROJECT_RELEASE_PATH }}
-      #     ls ${{ env.PROJECT_RELEASE_PATH }}
-      #     7z a ./${{ env.PROJECT_RELEASE_PATH }}.zip ./${{ env.PROJECT_RELEASE_PATH }}
+            # - name: Generate Artifacts
+            #   run: |
+            #     ls ${{ env.PROJECT_BUILD_PATH }}
+            #     cp ${{ env.PROJECT_BUILD_PATH }}/${{ env.PROJECT_NAME }} ${{ env.PROJECT_RELEASE_PATH }}
+            #     cp ${{ env.PROJECT_NAME }}/README.md ${{ env.PROJECT_RELEASE_PATH }}
+            #     cp ${{ env.PROJECT_NAME }}/LICENSE ${{ env.PROJECT_RELEASE_PATH }}
+            #     ls ${{ env.PROJECT_RELEASE_PATH }}
+            #     7z a ./${{ env.PROJECT_RELEASE_PATH }}.zip ./${{ env.PROJECT_RELEASE_PATH }}
 
-      # Issue: Double zip: https://github.com/actions/upload-artifact/issues/39
-      # - name: Upload Artifacts
-      #   uses: actions/upload-artifact@v3
-      #   with:
-      #     name: ${{ env.PROJECT_RELEASE_PATH }}.zip
-      #     path: ./${{ env.PROJECT_RELEASE_PATH }}.zip
+            # Issue: Double zip: https://github.com/actions/upload-artifact/issues/39
+            # - name: Upload Artifacts
+            #   uses: actions/upload-artifact@v3
+            #   with:
+            #     name: ${{ env.PROJECT_RELEASE_PATH }}.zip
+            #     path: ./${{ env.PROJECT_RELEASE_PATH }}.zip
 
-      # Alternative: https://github.com/marketplace/actions/gh-release
-      # - name: Upload Artifact to Release
-      #   uses: actions/upload-release-asset@v1.0.1
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   with:
-      #     upload_url: ${{ github.event.release.upload_url }}
-      #     asset_name: ${{ env.PROJECT_RELEASE_PATH }}.zip
-      #     asset_path: ./${{ env.PROJECT_RELEASE_PATH }}.zip
-      #     asset_content_type: application/zip
-      #   if: github.event_name == 'release' && github.event.action == 'published'
-      #
-    - name: Setup Pages
-      uses: actions/configure-pages@v2
-    - name: Upload artifact
-      uses: actions/upload-pages-artifact@v1
-      with:
-        path: './dist'
-  deploy:
-    # Add a dependency to the build job
-    needs: build
+            # Alternative: https://github.com/marketplace/actions/gh-release
+            # - name: Upload Artifact to Release
+            #   uses: actions/upload-release-asset@v1.0.1
+            #   env:
+            #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            #   with:
+            #     upload_url: ${{ github.event.release.upload_url }}
+            #     asset_name: ${{ env.PROJECT_RELEASE_PATH }}.zip
+            #     asset_path: ./${{ env.PROJECT_RELEASE_PATH }}.zip
+            #     asset_content_type: application/zip
+            #   if: github.event_name == 'release' && github.event.action == 'published'
+            #
+      - name: Setup Pages
+        uses: actions/configure-pages@v2
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v1
+        with:
+          path: './dist'
+          deploy:
+            # Add a dependency to the build job
+            needs: build
 
-    # Grant GITHUB_TOKEN the permissions required to make a Pages deployment
-    permissions:
-      pages: write      # to deploy to Pages
-      id-token: write   # to verify the deployment originates from an appropriate source
+              # Grant GITHUB_TOKEN the permissions required to make a Pages deployment
+            permissions:
+              pages: write      # to deploy to Pages
+            id-token: write   # to verify the deployment originates from an appropriate source
 
-    # Deploy to the github-pages environment
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+              # Deploy to the github-pages environment
+            environment:
+              name: github-pages
+            url: ${{ steps.deployment.outputs.page_url }}
 
-    # Specify runner + deployment step
-    runs-on: ubuntu-latest
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4 # or specific "vX.X.X" version tag for this action
+              # Specify runner + deployment step
+            runs-on: ubuntu-latest
+            steps:
+              - name: Deploy to GitHub Pages
+            id: deployment
+            uses: actions/deploy-pages@v4 # or specific "vX.X.X" version tag for this action
 
 
