@@ -1,0 +1,7 @@
+{
+    "files.exclude": {
+        "**/.github": false,
+        ".github/disabled/**": true,
+        "raylib/**": false,
+    }
+}
