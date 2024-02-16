@@ -206,6 +206,7 @@ EXT ?= .out
 all:
 	@echo -- -- making $(PROJECT_NAME)
 	$(MAKE) $(PROJECT_NAME)
+	cp -R $(PROJECT_NAME)/resources $(PROJECT_BUILD_PATH)/$(PROJECT_NAME)/resources
 
 # Project target defined by PROJECT_NAME
 $(PROJECT_NAME): $(OBJS)
