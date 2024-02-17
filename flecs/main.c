@@ -22,7 +22,8 @@
 #include <stdlib.h> // Required for:
 #include <string.h> // Required for:
 
-#define FLECS_CUSTOM_BUILD // Don't build all addons
+// #define FLECS_CUSTOM_BUILD // Don't build all addons
+// TODO: Switch to a custom build of flecs but some addons are required
 #include "flecs.h"
 
 //----------------------------------------------------------------------------------
