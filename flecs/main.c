@@ -84,19 +84,22 @@ void Move(ecs_iter_t *it)
     }
 }
 
-// flecs initialization
+// define ecs as a global variable
 ecs_world_t *ecs;
 
 //------------------------------------------------------------------------------------
 // Program main entry point
 //------------------------------------------------------------------------------------
-int main(void)
+int main(int argc, char *argv[])
 {
 #if !defined(_DEBUG)
     SetTraceLogLevel(LOG_NONE); // Disable raylib trace log messages
 #endif
 
-    ecs_world_t *ecs = ecs_init();
+    // ecs_world_t *world = ecs_init_w_args(argc, argv);
+    // ecs = world;
+    ecs = ecs_init_w_args(argc, argv);
+    assert(ecs != NULL);
     ECS_COMPONENT(ecs, Position);
     ECS_COMPONENT(ecs, Velocity);
 
@@ -121,7 +124,6 @@ int main(void)
 #else
     SetTargetFPS(60); // Set our game frames-per-second
     //--------------------------------------------------------------------------------------
-
     // Main game loop
     while (!WindowShouldClose()) // Detect window close button
     {
@@ -132,6 +134,7 @@ int main(void)
     // De-Initialization
     //--------------------------------------------------------------------------------------
     UnloadRenderTexture(target);
+    ecs_fini(ecs);
 
     // TODO: Unload all loaded resources at this point
 
@@ -151,7 +154,11 @@ void UpdateDrawFrame(void)
     //----------------------------------------------------------------------------------
     // TODO: Update variables / Implement example logic at this point
     //----------------------------------------------------------------------------------
-    ecs_progress(ecs, GetTime());
+    // fix this so that it uses the ecs global variable
+    // fix why is ecs NULL here?
+
+    assert(ecs != NULL);
+    ecs_progress(ecs, 0);
 
     // Draw
     //----------------------------------------------------------------------------------
