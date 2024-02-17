@@ -3,76 +3,77 @@ import { Debug } from "../utils/debug";
 import "pixi-spine";
 
 type Asset = {
-  name: string;
-  url: string;
-  ext: string;
-  category: string;
-  group: string;
+    name: string;
+    url: string;
+    ext: string;
+    category: string;
+    group: string;
 };
 
 export default class AssetLoader {
-  private assetFileUrls = this.importAssetFiles();
+    private assetFileUrls = this.importAssetFiles();
 
-  manifest: Asset[];
+    manifest: Asset[];
 
-  constructor() {
-    this.manifest = this.generateManifest();
-  }
-
-  importAssetFiles() {
-    const assetFiles = import.meta.glob("/public/**/*.*");
-
-    return Object.keys(assetFiles);
-  }
-
-  async loadAssetsGroup(group: string) {
-    const sceneAssets = this.manifest.filter((asset) => asset.group === group);
-
-    for (const asset of sceneAssets) {
-      Assets.add(asset.name, asset.url);
+    constructor() {
+        this.manifest = this.generateManifest();
     }
 
-    const resources = await Assets.load(sceneAssets.map((asset) => asset.name));
+    importAssetFiles() {
+        const assetFiles = import.meta.glob("/public/**/*.*");
 
-    Debug.log("✅ Loaded assets group", group, resources);
+        return Object.keys(assetFiles);
+    }
 
-    return resources;
-  }
+    async loadAssetsGroup(group: string) {
+        const sceneAssets = this.manifest.filter((asset) => asset.group === group);
 
-  generateManifest() {
-    const assetsManifest: Asset[] = [];
-    const assetPathRegexp =
-      /public\/(?<group>[\w.-]+)\/(?<category>[\w.-]+)\/(?<name>[\w.-]+)\.(?<ext>\w+)$/;
+        for (const asset of sceneAssets) {
+            Assets.add(asset.name, asset.url);
+        }
 
-    this.assetFileUrls.forEach((assetPath) => {
-      const match = assetPathRegexp.exec(assetPath);
+        const resources = await Assets.load(sceneAssets.map((asset) => asset.name));
 
-      if (!match || !match.groups) {
-        return console.error(
-          `Invalid asset path: ${assetPath}, should match ${assetPathRegexp}`
-        );
-      }
+        Debug.log("✅ Loaded assets group", group, resources);
 
-      const { group, category, name, ext } = match.groups;
+        return resources;
+    }
 
-      // Skip image files in the spine or spritesheets category
-      if (category === "spritesheets" && ext !== "json") {
-        return;
-      }
+    generateManifest() {
+        const assetsManifest: Asset[] = [];
+        const assetPathRegexp =
+            /public\/(?<group>[\w.-]+)\/(?<category>[\w.-]+)\/(?<name>[\w.-]+)\.(?<ext>\w+)$/;
 
-      if (category === "spine" && ext !== "json" && ext !== "skel") {
-        return;
-      }
+        this.assetFileUrls.forEach((assetPath) => {
+            const match = assetPathRegexp.exec(assetPath);
 
-      assetsManifest.push({
-        group,
-        category,
-        name,
-        ext,
-        url: assetPath.replace(/.*public/, ""),
-      });
-    });
+            if (!match || !match.groups) {
+                return console.error(
+                    `Invalid asset path: ${assetPath}, should match ${assetPathRegexp}`
+                );
+            }
 
-    return assetsManifest;
-  }
+            const { group, category, name, ext } = match.groups;
+
+            // Skip image files in the spine or spritesheets category
+            if (category === "spritesheets" && ext !== "json") {
+                return;
+            }
+
+            if (category === "spine" && ext !== "json" && ext !== "skel") {
+                return;
+            }
+
+            assetsManifest.push({
+                group,
+                category,
+                name,
+                ext,
+                url: assetPath.replace(/.*public/, "").replace(/^\/+/g, ''),
+            });
+            console.log(assetsManifest)
+        });
+
+        return assetsManifest;
+    }
 }

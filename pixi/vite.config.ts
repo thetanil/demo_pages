@@ -1,18 +1,24 @@
 import { defineConfig } from "vite";
 
 export default defineConfig({
-  build: {
-    target: "esnext",
-    rollupOptions: {
-      external: /\.skel$/,
+    base: './',
+    build: {
+        target: "esnext",
+        rollupOptions: {
+            external: /\.skel$/,
+            // output: {
+            //     manualChunks: {
+            //         pixi: ["pixi.js"],
+            //     }
+            // }
+        },
     },
-  },
-  server: {
-    port: 3000,
-    host: true,
-  },
-  preview: {
-    host: true,
-    port: 8080,
-  },
+    server: {
+        port: 3000,
+        host: true,
+    },
+    preview: {
+        host: true,
+        port: 8080,
+    },
 });
