@@ -71,7 +71,6 @@ export default class AssetLoader {
                 ext,
                 url: assetPath.replace(/.*public/, "").replace(/^\/+/g, ''),
             });
-            console.log(assetsManifest)
         });
 
         return assetsManifest;
