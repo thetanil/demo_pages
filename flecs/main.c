@@ -84,6 +84,9 @@ void Move(ecs_iter_t *it)
     }
 }
 
+// flecs initialization
+ecs_world_t *ecs;
+
 //------------------------------------------------------------------------------------
 // Program main entry point
 //------------------------------------------------------------------------------------
@@ -93,9 +96,7 @@ int main(void)
     SetTraceLogLevel(LOG_NONE); // Disable raylib trace log messages
 #endif
 
-    // flecs initialization
     ecs_world_t *ecs = ecs_init();
-
     ECS_COMPONENT(ecs, Position);
     ECS_COMPONENT(ecs, Velocity);
 
@@ -124,7 +125,6 @@ int main(void)
     // Main game loop
     while (!WindowShouldClose()) // Detect window close button
     {
-        ecs_progress(ecs, GetTime());
         UpdateDrawFrame();
     }
 #endif
@@ -151,6 +151,7 @@ void UpdateDrawFrame(void)
     //----------------------------------------------------------------------------------
     // TODO: Update variables / Implement example logic at this point
     //----------------------------------------------------------------------------------
+    ecs_progress(ecs, GetTime());
 
     // Draw
     //----------------------------------------------------------------------------------
