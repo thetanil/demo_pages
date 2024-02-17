@@ -18,8 +18,6 @@ export default class SceneManager {
             view: document.querySelector("#app") as HTMLCanvasElement,
             autoDensity: true,
             resizeTo: window,
-            //   powerPreference: "high-performance",
-            // powerPreference: "low-power",
             autoStart: false,
             sharedTicker: true,
             backgroundColor: 0x23272a,
@@ -33,6 +31,8 @@ export default class SceneManager {
 
             this.currentScene?.onResize?.(target.innerWidth, target.innerHeight);
         });
+
+        // this.app.ticker.maxFPS = 10;
 
         this.app.ticker.add(() => {
             this.currentScene?.update?.(this.app.ticker.elapsedMS);
