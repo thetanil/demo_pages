@@ -10,4 +10,4 @@ build:
 
 deploy:
 	@echo "Deploying..."
-	cp -r dist/* ../build/pixi/
+	cp -r dist/* ../build/phaser/
