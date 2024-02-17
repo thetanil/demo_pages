@@ -3,5 +3,8 @@
         "**/.github": false,
         ".github/disabled/**": true,
         "raylib/**": false,
+    },
+    "files.associations": {
+        "components.h": "c"
     }
 }
