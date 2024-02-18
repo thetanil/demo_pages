@@ -4,20 +4,14 @@ import { Container, TextStyle, Graphics, Color, Text, Ticker } from "pixi.js";
 
 export class GoL extends Container {
   private readonly cellSize: number = 5;
-
   private cellsHigh = Math.floor(window.innerHeight / this.cellSize);
   private cellsWide = Math.floor(window.innerWidth / this.cellSize);
   private boardSize: number = this.cellsHigh * this.cellsWide;
   private cells: boolean[] = new Array(this.boardSize);
   private nextCells: boolean[] = new Array(this.boardSize);
   private gCells: Graphics[] = new Array(this.boardSize);
-
-  // private board: Container = new Container();
   private fpsText: Text = new Text();
   private dc = 0.0; // delta accumulator
-  // tick = 0;
-  // fps = 0.0;
-  // dc = 0.0;
   private stateCalcMS = 0.0;
   private gfxDrawMS = 0.0;
   private keyboard = Keyboard.getInstance();
@@ -25,12 +19,6 @@ export class GoL extends Container {
   constructor() {
     console.log("GoL constructor");
     super();
-
-    this.initDataBoard();
-    this.initGfxBoard();
-    this.showFps();
-    Ticker.shared.maxFPS = 10;
-    Ticker.shared.add(this.update, this);
   }
 
   initGfxBoard() {
@@ -164,6 +152,9 @@ export class GoL extends Container {
   load() {
     console.log("GoL load");
     this.initDataBoard();
+    this.initGfxBoard();
+    this.showFps();
+    Ticker.shared.add(this.update, this);
     this.fpsText = new Text("FPS: 0");
     this.keyboard.onAction(({ action, buttonState }) => {
       if (buttonState === "pressed") this.onActionPress(action);

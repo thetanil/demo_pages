@@ -1,10 +1,10 @@
 import { Sprite, Text } from "pixi.js";
 import Scene from "../core/Scene";
 import { centerObjects } from "../utils/misc";
+import { Debug } from "../utils/debug";
 
 export default class Loading extends Scene {
   name = "Loading";
-
   async load() {
     await this.utils.assetLoader.loadAssetsGroup("Loading");
 

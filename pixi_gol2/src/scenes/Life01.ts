@@ -1,35 +1,47 @@
-import Keyboard from "../core/Keyboard";
-import { Container, TextStyle, Graphics, Color, Text, Ticker } from "pixi.js";
-// import { centerObjects } from "../utils/misc";
+import { Color, Ticker, Container, Graphics, Text, TextStyle } from "pixi.js";
+import Scene from "../core/Scene";
 
-export class GoL2 extends Container {
+export default class Life01 extends Scene {
+  name = "Life01";
   private readonly cellSize: number = 5;
-
   private cellsHigh = Math.floor(window.innerHeight / this.cellSize);
   private cellsWide = Math.floor(window.innerWidth / this.cellSize);
   private boardSize: number = this.cellsHigh * this.cellsWide;
   private cells: boolean[] = new Array(this.boardSize);
   private nextCells: boolean[] = new Array(this.boardSize);
   private gCells: Graphics[] = new Array(this.boardSize);
-
-  // private board: Container = new Container();
+  private gBoard: Container = new Container();
   private fpsText: Text = new Text();
   private dc = 0.0; // delta accumulator
-  // tick = 0;
-  // fps = 0.0;
-  // dc = 0.0;
   private stateCalcMS = 0.0;
   private gfxDrawMS = 0.0;
-  private keyboard = Keyboard.getInstance();
+  private button: Graphics = new Graphics();
+  async load() {
+    // Create a container to hold the scene elements
+    const sceneContainer = new Container();
+    this.addChild(sceneContainer);
+    this.initDataBoard();
+    this.initGfxBoard();
+    this.showFps();
+    Ticker.shared.add(this.update, this);
+    // @ts-expect-error
+    window.__PIXI_APP__.renderer.view.addEventListener(
+      "pointerdown",
+      () => {
+        // @ts-expect-error
+        window.sceneManager.switchScene("Life02");
+      },
+      { once: true }
+    );
+  }
 
-  constructor() {
-    console.log("GoL2 constructor");
-    super();
+  async start() {
+    console.log("Life01 start");
   }
 
   initGfxBoard() {
     console.log("initGfxBoard");
-    const color = new Color("red");
+    const color = new Color("blue");
     for (let i = 0; i < this.boardSize; i++) {
       this.gCells[i] = new Graphics();
       this.gCells[i].beginFill(color);
@@ -41,7 +53,12 @@ export class GoL2 extends Container {
       );
       this.gCells[i].endFill();
     }
-    this.addChild(...this.gCells);
+    this.gBoard.addChild(...this.gCells);
+    this.gBoard.interactive = true;
+    this.gBoard.on("pointerdown", () => {
+      console.log("pointerdown");
+    });
+    this.addChild(this.gBoard);
   }
 
   initDataBoard() {
@@ -115,9 +132,9 @@ export class GoL2 extends Container {
 
     if (this.dc > 500) {
       let perfStr = `FPS: ${Ticker.shared.FPS.toFixed(0)} `;
-      perfStr += `FrameTimeMS: ${Ticker.shared.deltaMS.toFixed(0)} `;
-      perfStr += `StateCalc_us: ${this.stateCalcMS.toFixed(0)} `;
-      perfStr += `GfxDraw_us: ${this.gfxDrawMS.toFixed(0)}`;
+      perfStr += `\nFrameTimeMS: ${Ticker.shared.deltaMS.toFixed(0)} `;
+      perfStr += `\nStateCalc_us: ${this.stateCalcMS.toFixed(0)} `;
+      perfStr += `\nGfxDraw_us: ${this.gfxDrawMS.toFixed(0)}`;
       this.fpsText.text = perfStr;
       this.dc = 0;
     }
@@ -150,55 +167,4 @@ export class GoL2 extends Container {
     this.fpsText.style = textStyle;
     this.addChild(this.fpsText);
   }
-
-  start() {
-    console.log("GoL start");
-  }
-
-  load() {
-    console.log("GoL load");
-    this.initDataBoard();
-    this.initGfxBoard();
-    this.showFps();
-    Ticker.shared.add(this.update, this);
-    this.fpsText = new Text("FPS: 0");
-    this.keyboard.onAction(({ action, buttonState }) => {
-      if (buttonState === "pressed") this.onActionPress(action);
-      // else if (buttonState === "released") this.onActionRelease(action);
-    });
-  }
-
-  private onActionPress(action: keyof typeof Keyboard.actions) {
-    switch (action) {
-      case "LEFT":
-        console.log("LEFT");
-        // this.move(Directions.LEFT);
-        break;
-      case "RIGHT":
-        console.log("RIGHT");
-        // this.move(Directions.RIGHT);
-        break;
-      case "JUMP":
-        console.log("JUMP");
-        // this.jump();
-        break;
-      case "SHIFT":
-        console.log("SHIFT");
-        // this.dash();
-        break;
-
-      default:
-        break;
-    }
-  }
-
-  // onActionRelease(action: keyof typeof Keyboard.actions) {
-  //   if (
-  //     (action === "LEFT" && this.state.velocity.x < 0) ||
-  //     (action === "RIGHT" && this.state.velocity.x > 0)
-  //   ) {
-  //     console.log("action", action);
-  //     //   this.stopMovement();
-  //   }
-  // }
 }
