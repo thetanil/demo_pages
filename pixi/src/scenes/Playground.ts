@@ -9,6 +9,7 @@ export default class Playground extends Scene {
     private cellsWide = Math.floor(window.innerWidth / this.cellSize)
     private boardSize: number = this.cellsHigh * this.cellsWide
     private cells: boolean[] = new Array(this.boardSize);
+    private nextCells: boolean[] = new Array(this.boardSize);
     private gCells: Graphics[] = new Array(this.boardSize);
 
     // an implementation of conway's game of life in typescript using a single array
@@ -22,8 +23,6 @@ export default class Playground extends Scene {
     // onresize(width: number, height: number): void {
 
     initializeBoard() {
-        console.log('height', this.cellsHigh)
-        console.log('width', this.cellsWide)
         console.log('initializeBoard')
         for (let i = 0; i < this.boardSize; i++) {
             this.cells[i] = Math.random() > 0.5;
@@ -31,8 +30,6 @@ export default class Playground extends Scene {
         this.board.x = 0;
         this.board.y = 0;
         this.addChild(this.board);
-        // for (let i = 0; i < this.boardSize; i++) {
-        // }
 
         let color = new Color('red');
         for (let i = 0; i < this.boardSize; i++) {
@@ -49,7 +46,6 @@ export default class Playground extends Scene {
         this.board.addChild(...this.gCells);
     }
 
-    // implementation of conway's game of life getNeighbors function using a single array
     private countNeighbors(x: number, y: number): number {
         let count = 0;
 
@@ -70,29 +66,19 @@ export default class Playground extends Scene {
     }
 
     calculateNextState(): void {
-        const newBoard: boolean[] = new Array(this.cellsWide * this.cellsHigh).fill(false);
-
         for (let i = 0; i < this.cellsHigh; i++) {
             for (let j = 0; j < this.cellsWide; j++) {
                 const neighbors = this.countNeighbors(i, j);
 
                 if (this.cells[i * this.cellsWide + j] && (neighbors === 2 || neighbors === 3)) {
-                    newBoard[i * this.cellsWide + j] = true;
+                    this.nextCells[i * this.cellsWide + j] = true;
                 } else if (!this.cells[i * this.cellsWide + j] && neighbors === 3) {
-                    newBoard[i * this.cellsWide + j] = true;
+                    this.nextCells[i * this.cellsWide + j] = true;
                 }
             }
         }
 
-        // for (let i = 0; i < this.boardSize; i++) {
-        //     this.cells[i] = newBoard[i];
-        // }
-        // for (let i = 0; i < this.cellHeight; i++) {
-        //     for (let j = 0; j < this.cellWidth; j++) {
-        //         this.cells[i] = newBoard[i];
-        //     }
-        // }
-        this.cells = newBoard;
+        this.cells = this.nextCells;
     }
 
     drawBoard() {
