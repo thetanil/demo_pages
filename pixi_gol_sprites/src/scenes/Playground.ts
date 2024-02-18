@@ -1,5 +1,5 @@
 import Scene from "../core/Scene";
-import { Sprite, Texture, Text, TextStyle, Container } from "pixi.js";
+import { Sprite, Texture, Color, Text, TextStyle, Container } from "pixi.js";
 
 export default class Playground extends Scene {
     name = "Playground";
@@ -18,7 +18,7 @@ export default class Playground extends Scene {
         canvas.height = this.cellSize;
         const ctx = canvas.getContext('2d');
         if (ctx) {
-            ctx.fillStyle = "red";
+            ctx.fillStyle = "white";
             ctx.fillRect(0, 0, this.cellSize, this.cellSize);
         }
         return Texture.from(canvas);
@@ -52,6 +52,7 @@ export default class Playground extends Scene {
         for (let x = 0; x < this.cellsWide; x++) {
             for(let y = 0; y < this.cellsHigh; y++) {
                 this.gCells[y * this.cellsWide + x] = new Sprite(pixelTexture);
+                this.gCells[y * this.cellsWide + x].tint = new Color({ h: x, s: y, v: 100, a: .5 })
                 this.gCells[y * this.cellsWide + x].x = x * this.cellSize;
                 this.gCells[y * this.cellsWide + x].y = y * this.cellSize;
             }
