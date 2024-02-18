@@ -78,7 +78,11 @@ export default class Playground extends Scene {
             }
         }
 
-        this.cells = this.nextCells;
+        // this.cells = this.nextCells;
+        for (let i = 0; i < this.boardSize; i++) {
+            this.cells[i] = this.nextCells[i];
+            this.nextCells[i] = false;
+        }
     }
 
     drawBoard() {
