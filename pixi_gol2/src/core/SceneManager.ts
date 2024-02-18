@@ -25,7 +25,8 @@ export default class SceneManager {
 
     // @ts-expect-error Set PIXI app to global window object for the PIXI Inspector
     window.__PIXI_APP__ = this.app;
-    // @ts-expect-error
+
+    // @ts-expect-error because hacks happen
     window.sceneManager = this;
 
     window.addEventListener("resize", (ev: UIEvent) => {

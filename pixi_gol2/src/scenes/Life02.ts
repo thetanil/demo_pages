@@ -1,4 +1,4 @@
-import { Color, Ticker, Container, Graphics, Text, TextStyle } from "pixi.js";
+import { Color, Ticker, Graphics, Text, TextStyle } from "pixi.js";
 import Scene from "../core/Scene";
 
 export default class Life02 extends Scene {
@@ -19,11 +19,11 @@ export default class Life02 extends Scene {
     this.initGfxBoard();
     this.showFps();
     Ticker.shared.add(this.update, this);
-    // @ts-expect-error
+    // @ts-expect-error because hacks happen
     window.__PIXI_APP__.renderer.view.addEventListener(
       "pointerdown",
       () => {
-        // @ts-expect-error
+        // @ts-expect-error because hacks happen
         window.sceneManager.switchScene("Life01");
       },
       { once: true }

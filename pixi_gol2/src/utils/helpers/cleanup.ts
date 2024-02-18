@@ -1,14 +1,12 @@
-import { Container } from '@pixi/display';
+import { Container } from "@pixi/display";
 
-export function cleanup(element: Container)
-{
-    if (!element) return;
+export function cleanup(element: Container) {
+  if (!element) return;
 
-    if (element.parent)
-    {
-        element.parent.removeChild(element);
-    }
+  if (element.parent) {
+    element.parent.removeChild(element);
+  }
 
-    element.destroy();
-    element = null;
+  element.destroy();
+  element = null;
 }

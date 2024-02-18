@@ -57,10 +57,7 @@ export default class Playground extends Scene {
     Ticker.shared.add(this.update, this);
   }
 
-  update(delta: number) {
-    // console.log(
-    //   `activePrefab: ${this.activePrefab.name}, currentPrefab: ${this.currentPrefab.name}`
-    // );
+  update() {
     if (this.currentPrefab.t !== this.activePrefab.t) {
       console.log("change prefab");
       this.removeChild(this.activePrefab.t);

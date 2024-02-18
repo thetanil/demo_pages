@@ -1,8 +1,7 @@
-import { Sprite, Text } from "pixi.js";
+import { Text } from "pixi.js";
 import Scene from "../core/Scene";
 import { centerObjects } from "../utils/misc";
 import { Debug } from "../utils/debug";
-import { Ticker } from "pixi.js";
 
 export default class MainMenu extends Scene {
   name = "MailMenu";
@@ -41,7 +40,7 @@ export default class MainMenu extends Scene {
     nextText.cursor = "pointer";
     // Go to the gameplay scene when clicked
     nextText.on("pointerup", () => {
-      // @ts-expect-error
+      // @ts-expect-error because window
       window.sceneManager.switchScene("Life01");
     });
     this.addChild(nextText);
