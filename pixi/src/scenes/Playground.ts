@@ -2,49 +2,51 @@ import Scene from "../core/Scene";
 import { Graphics, Color, Text, TextStyle, Container } from "pixi.js";
 
 export default class Playground extends Scene {
-    readonly cellsPerSide: number = 150;
-    readonly boardSize: number = this.cellsPerSide * this.cellsPerSide;
     name = "Playground";
+    // readonly cellsPerSide: number = 150;
+    private readonly cellSize: number = 5;
+    private cellsHigh = Math.floor(window.innerHeight / this.cellSize)
+    private cellsWide = Math.floor(window.innerWidth / this.cellSize)
+    private boardSize: number = this.cellsHigh * this.cellsWide
+    private cells: boolean[] = new Array(this.boardSize);
+    private gCells: Graphics[] = new Array(this.boardSize);
+
+    // an implementation of conway's game of life in typescript using a single array
+    // for the board state and a single array for the next state
+    private board: Container = new Container();
+    tick = 0;
     fps = 0.0;
     fpsText: Text = new Text;
     dc = 0.0;
 
-    // an implementation of conway's game of life in typescript using a single array
-    // for the board state and a single array for the next state
-    private board: boolean[] = new Array(this.boardSize);
-    boardGfxCells: Graphics[] = new Array(this.boardSize);
-    boardContainer: Container = new Container();
-    cellSize = window.innerWidth / this.cellsPerSide;
-    cellHeight = this.cellsPerSide;
-    cellWidth = this.cellsPerSide;
-    tick = 0;
-
     // onresize(width: number, height: number): void {
 
     initializeBoard() {
+        console.log('height', this.cellsHigh)
+        console.log('width', this.cellsWide)
         console.log('initializeBoard')
         for (let i = 0; i < this.boardSize; i++) {
-            this.board[i] = Math.random() > 0.5;
+            this.cells[i] = Math.random() > 0.5;
         }
-        this.boardContainer.x = 0;
-        this.boardContainer.y = 0;
-        this.addChild(this.boardContainer);
-        for (let i = 0; i < this.boardSize; i++) {
-            this.boardGfxCells[i] = new Graphics();
-        }
+        this.board.x = 0;
+        this.board.y = 0;
+        this.addChild(this.board);
+        // for (let i = 0; i < this.boardSize; i++) {
+        // }
 
         let color = new Color('red');
         for (let i = 0; i < this.boardSize; i++) {
-            this.boardGfxCells[i].beginFill(color);
-            this.boardGfxCells[i].drawRect(
-                (i % this.cellsPerSide) * this.cellSize,
-                Math.floor(i / this.cellsPerSide) * this.cellSize,
+            this.gCells[i] = new Graphics();
+            this.gCells[i].beginFill(color);
+            this.gCells[i].drawRect(
+                (i % this.cellsWide) * this.cellSize,
+                Math.floor(i / this.cellsWide) * this.cellSize,
                 this.cellSize,
                 this.cellSize
             );
-            this.boardGfxCells[i].endFill();
+            this.gCells[i].endFill();
         }
-        this.boardContainer.addChild(...this.boardGfxCells);
+        this.board.addChild(...this.gCells);
     }
 
     // implementation of conway's game of life getNeighbors function using a single array
@@ -55,10 +57,10 @@ export default class Playground extends Scene {
             for (let j = -1; j <= 1; j++) {
                 if (i === 0 && j === 0) continue;
 
-                const newX = (x + i + this.cellHeight) % this.cellHeight;
-                const newY = (y + j + this.cellWidth) % this.cellWidth;
+                const newX = (x + i + this.cellsHigh) % this.cellsHigh;
+                const newY = (y + j + this.cellsWide) % this.cellsWide;
 
-                if (this.board[newX * this.cellWidth + newY]) {
+                if (this.cells[newX * this.cellsWide + newY]) {
                     count++;
                 }
             }
@@ -68,29 +70,37 @@ export default class Playground extends Scene {
     }
 
     calculateNextState(): void {
-        const newBoard: boolean[] = new Array(this.cellWidth * this.cellHeight).fill(false);
+        const newBoard: boolean[] = new Array(this.cellsWide * this.cellsHigh).fill(false);
 
-        for (let i = 0; i < this.cellHeight; i++) {
-            for (let j = 0; j < this.cellWidth; j++) {
+        for (let i = 0; i < this.cellsHigh; i++) {
+            for (let j = 0; j < this.cellsWide; j++) {
                 const neighbors = this.countNeighbors(i, j);
 
-                if (this.board[i * this.cellWidth + j] && (neighbors === 2 || neighbors === 3)) {
-                    newBoard[i * this.cellWidth + j] = true;
-                } else if (!this.board[i * this.cellWidth + j] && neighbors === 3) {
-                    newBoard[i * this.cellWidth + j] = true;
+                if (this.cells[i * this.cellsWide + j] && (neighbors === 2 || neighbors === 3)) {
+                    newBoard[i * this.cellsWide + j] = true;
+                } else if (!this.cells[i * this.cellsWide + j] && neighbors === 3) {
+                    newBoard[i * this.cellsWide + j] = true;
                 }
             }
         }
 
-        this.board = newBoard;
+        // for (let i = 0; i < this.boardSize; i++) {
+        //     this.cells[i] = newBoard[i];
+        // }
+        // for (let i = 0; i < this.cellHeight; i++) {
+        //     for (let j = 0; j < this.cellWidth; j++) {
+        //         this.cells[i] = newBoard[i];
+        //     }
+        // }
+        this.cells = newBoard;
     }
 
     drawBoard() {
         for (let i = 0; i < this.boardSize; i++) {
-            if (this.board[i]) {
-                this.boardGfxCells[i].visible = true;
+            if (this.cells[i]) {
+                this.gCells[i].visible = true;
             } else {
-                this.boardGfxCells[i].visible = false;
+                this.gCells[i].visible = false;
             }
         }
     }
@@ -100,11 +110,11 @@ export default class Playground extends Scene {
         this.fps = 1000 / delta;
         this.dc += delta;
         if (this.dc > 1000) {
+            this.fpsText.text = `FPS: ${Math.floor(this.fps)} `;
             this.dc = 0;
         }
         this.calculateNextState();
         this.drawBoard();
-        this.fpsText.text = `FPS: ${Math.floor(this.fps)}`;
     }
 
     load() {
@@ -131,7 +141,7 @@ export default class Playground extends Scene {
             lineJoin: 'round',
         });
         this.fpsText.style = style;
-        this.addChild(this.fpsText);
+        // this.addChild(this.fpsText);
     }
 }
 
