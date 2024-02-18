@@ -10,5 +10,5 @@ build:
 
 deploy:
 	@echo "Deploying..."
-	mkdir -p ../build/pixi
-	cp -r dist/* ../build/pixi/
+	mkdir -p ../build/pixi_gol2
+	cp -r dist/* ../build/pixi_gol2/
