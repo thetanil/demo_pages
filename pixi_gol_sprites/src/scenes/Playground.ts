@@ -41,7 +41,15 @@ export default class Playground extends Scene {
 
         console.log('initializeBoard')
         for (let i = 0; i < this.boardSize; i++) {
-            this.cells[i] = Math.random() > 0.5;
+            if (i % 3 == 1) {
+                this.cells[i] = 1;
+            } else if (i % 7 == 1) {
+                this.cells[i] = 1;
+            } else if (i % 3 == 3) {
+                this.cells[i] = 1;
+            } else {
+                this.cells[i] = 0;
+            }
         }
         this.board.x = 0;
         this.board.y = 0;
